@@ -80,7 +80,7 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+            checkCollisions();
     }
 
     /* This is called by the update function and loops through all of the
@@ -95,6 +95,27 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
+    }
+
+   function checkCollisions () {
+        if (player.y == -20) {
+            // player is on water, reset
+            this.player.resetPosition();
+        } else if (player.y >= 60 && player.y <= 237) {
+
+            // player is on road rows, check collisions
+            // loop through each bug
+            allEnemies.forEach(function(enemy) {
+                // is the bug on the same row as the player?
+                if (enemy.y == player.y - 10) {
+                    // is the bug on the player?
+                    if (enemy.x >= player.x - 30 && enemy.x <= player.x + 30) {
+                            this.player.resetPosition();
+                            console.log("lost game");
+                    }
+                }
+            });
+        }
     }
 
     /* This function initially draws the "game level", it will then call
