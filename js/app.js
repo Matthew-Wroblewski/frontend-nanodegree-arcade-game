@@ -53,6 +53,28 @@ var Player = function() {
 Player.prototype.resetPosition = function() {
   this.x = 200;
   this.y = 403;
+  livesLeft--;
+  if (livesLeft === 0) {
+    if (score > highScore) {
+      highScore = score;
+      ctx.clearRect(351,630,300,50);
+      ctx.font = 'italic 15pt Arial';
+      ctx.fillStyle = 'red';
+      ctx.fillText("High Score:" +highScore, 351, 650);
+    }
+    score = 0;
+    ctx.clearRect(351,580,100,50);
+    ctx.font = 'italic 15pt Arial';
+    ctx.lineWidth = 3;
+    ctx.fillStyle = 'blue';
+    ctx.fillText("Score:" +score, 351, 620);
+    livesLeft = 3;
+  }
+}
+
+Player.prototype.resetAfterWin = function() {
+  this.x = 200;
+  this.y = 403;
 }
 // This class requires an update(), render() and
 // a handleInput() method.
@@ -89,19 +111,20 @@ Player.prototype.handleInput = function(key){
       this.render();
     }
     if (this.y < 0) {
-        winScore = winScore +50;
+      score = score + winScore;
       this.render();
       self = this;
       canMove = false;
-
+      ctx.clearRect(351,580,100,50);
+      ctx.font = 'italic 15pt Arial';
+      ctx.lineWidth = 3;
+      ctx.fillStyle = 'blue';
+      ctx.fillText("Score:" +score, 351, 620);
       setTimeout(function() {
         self.x = 200;
         self.y = 403;
         canMove = true;
       }, 1500)
-      ctx.font = '23pt Arial';
-      ctx.lineWidth = 3;
-      ctx.fillStyle = 'blue';
       fadeScore("+"+winScore);
       /*
       ctx.fillText("You win!", 200, 615);
@@ -140,10 +163,25 @@ function fadeScore(text) {
 
 var player = new Player();
 var canMove = true;
+var score = 0;
+var winScore = 50;
+var highScore = 0;
 var allEnemies = [];
 for (var i = 0;i < 1; i++){
   allEnemies[i] = new Enemy();
 }
+ctx.font = 'italic 35pt Cursive';
+ctx.lineWidth = 4;
+ctx.fillStyle = 'blue';
+ctx.strokeText("Crazed Beatles", 86, 37);
+ctx.fillText("Crazed Beatles", 86, 37);
+ctx.font = 'italic 15pt Arial';
+ctx.lineWidth = 3;
+ctx.fillStyle = 'blue';
+ctx.fillText("Score:" +score, 351, 620);
+ctx.fillStyle = 'red';
+ctx.fillText("High Score:" +highScore, 351, 650);
+var livesLeft = 3;
 
 
 // This listens for key presses and sends the keys to your

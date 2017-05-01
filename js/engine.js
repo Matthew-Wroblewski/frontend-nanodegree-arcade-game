@@ -24,8 +24,6 @@ var Engine = (function(global) {
   canvas = doc.createElement('canvas'),
   ctx = canvas.getContext('2d'),
   lifeCount,
-  winScore = 0,
-  highScore = 0,
   lastTime;
 
   canvas.width = 505;
@@ -103,7 +101,7 @@ var Engine = (function(global) {
   function checkCollisions () {
     if (player.y == -20) {
       // player is on water, reset
-      this.player.resetPosition();
+      this.player.resetAfterWin();
     } else if (player.y >= 60 && player.y <= 237) {
 
       // player is on road rows, check collisions
@@ -201,17 +199,7 @@ var Engine = (function(global) {
     ctx.drawImage(Resources.get('images/Heartsmall.png'), 30, 580);
     ctx.drawImage(Resources.get('images/Heartsmall.png'), 65, 580);
     ctx.drawImage(Resources.get('images/Heartsmall.png'), 100, 580);
-    ctx.font = 'italic 35pt Cursive';
-    ctx.lineWidth = 4;
-    ctx.fillStyle = 'blue';
-    ctx.strokeText("Crazed Beatles", 86, 37);
-    ctx.fillText("Crazed Beatles", 86, 37);
-    ctx.font = 'italic 15pt Arial';
-    ctx.lineWidth = 3;
-    ctx.fillStyle = 'blue';
-    ctx.fillText("Score:" +winScore, 400, 620);
-    ctx.fillStyle = 'red';
-    ctx.fillText("High Score:" +winScore, 351, 650);
+
   }
 
   /* Go ahead and load all of the images we know we're going to need to
@@ -233,5 +221,4 @@ var Engine = (function(global) {
   * from within their app.js files.
   */
   global.ctx = ctx;
-  global.winScore = winScore;
 })(this);
