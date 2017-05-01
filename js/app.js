@@ -1,5 +1,5 @@
 /* jshint undef: true, unused: true, asi: true */
-/* globals ctx, Resources, document */
+/* globals ctx, Resources, document, winScore */
 
 // Enemies our player must avoid
 var Enemy = function() {
@@ -89,9 +89,11 @@ Player.prototype.handleInput = function(key){
       this.render();
     }
     if (this.y < 0) {
+        winScore = winScore +50;
       this.render();
       self = this;
       canMove = false;
+
       setTimeout(function() {
         self.x = 200;
         self.y = 403;
@@ -100,10 +102,12 @@ Player.prototype.handleInput = function(key){
       ctx.font = '23pt Arial';
       ctx.lineWidth = 3;
       ctx.fillStyle = 'blue';
+      fadeScore("+"+winScore);
+      /*
       ctx.fillText("You win!", 200, 615);
       setTimeout(function() {
         ctx.clearRect(200,585,200,100);
-      }, 2000)
+      }, 2000) */
 
     }
     break;
@@ -117,6 +121,21 @@ Player.prototype.handleInput = function(key){
 
   }
 }
+}
+
+function fadeScore(text) {
+    var alpha = 1.0,   // full opacity
+       interval = setInterval(function () {
+            ctx.clearRect(200,580,130,100); // Clears the canvas
+            ctx.fillStyle = "rgba(50, 205, 50, " + alpha + ")";
+            ctx.font = "italic 23pt Arial";
+            ctx.fillText(text, 225, 615);
+            alpha = alpha - 0.05; // decrease opacity (fade out)
+            if (alpha < 0) {
+                ctx.clearRect(200,580,130,100);
+                clearInterval(interval);
+            }
+        }, 65);
 }
 
 var player = new Player();
