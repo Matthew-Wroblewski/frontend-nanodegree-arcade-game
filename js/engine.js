@@ -92,6 +92,31 @@ var Engine = (function(global) {
   */
   function init() {
     lifeCount = 3;
+    ctx.font = 'italic 35pt Cursive';
+    ctx.lineWidth = 4;
+    ctx.fillStyle = 'blue';
+    ctx.strokeText("Crazed Beatles", 86, 37);
+    ctx.fillText("Crazed Beatles", 86, 37);
+
+    if (score > highScore) {
+      highScore = score;
+      ctx.clearRect(351,630,300,50);
+      ctx.font = 'italic 15pt Arial';
+      ctx.fillStyle = 'red';
+      ctx.fillText("High Score:" +highScore, 351, 650);
+    }
+
+    score = 0;
+    ctx.clearRect(351,580,150,50);
+    ctx.font = 'italic 15pt Arial';
+    ctx.lineWidth = 3;
+    ctx.fillStyle = 'blue';
+    ctx.fillText("Score:" +score, 351, 620);
+    livesLeft = 3;
+
+    ctx.fillStyle = 'red';
+    ctx.fillText("High Score:" +highScore, 351, 650);
+
     reset();
     lastTime = Date.now();
     main();
@@ -136,6 +161,7 @@ var Engine = (function(global) {
       ctx.lineWidth = 3;
       ctx.fillStyle = 'blue';
       ctx.fillText("Score:" +score, 351, 620);
+      fadeScore("+"+winScore);
     }
       reset();
       //  this.player.resetAfterWin();
@@ -173,11 +199,12 @@ var Engine = (function(global) {
       if ((greenGemXLoc - player.x >= -30 && greenGemXLoc - player.x <= 30) && (greenGemYLoc - player.y >= -30 && greenGemYLoc - player.y <= 30) && (pickedUpGreen === false)) {
       pickedUpGreen = true;
       score = score + winScore;
-      ctx.clearRect(351,580,100,50);
+      ctx.clearRect(351,580,150,50);
       ctx.font = 'italic 15pt Arial';
       ctx.lineWidth = 3;
       ctx.fillStyle = 'blue';
       ctx.fillText("Score:" +score, 351, 620);
+      fadeScore("+"+winScore);
     }
       else if  ((blueGemXLoc - player.x >= -30 && blueGemXLoc - player.x <= 30) && (blueGemYLoc - player.y >= -30 && blueGemYLoc - player.y <= 30) && (pickedUpBlue === false)) {
       pickedUpBlue = true;
@@ -187,6 +214,7 @@ var Engine = (function(global) {
       ctx.lineWidth = 3;
       ctx.fillStyle = 'blue';
       ctx.fillText("Score:" +score, 351, 620);
+      fadeScore("+"+winScore);
     }
       else if ((orangeGemXLoc - player.x >= -30 && orangeGemXLoc - player.x <= 30) && (orangeGemYLoc - player.y >= -30 && orangeGemYLoc - player.y <= 30) && (pickedUpOrange === false)) {
       pickedUpOrange = true;
@@ -196,6 +224,7 @@ var Engine = (function(global) {
         ctx.lineWidth = 3;
         ctx.fillStyle = 'blue';
         ctx.fillText("Score:" +score, 351, 620);
+        fadeScore("+"+winScore);
     }
 
     }
@@ -270,6 +299,7 @@ var Engine = (function(global) {
   * those sorts of things. It's only called once by the init() method.
   */
   function reset() {
+
     pickedUpGreen = false;
     pickedUpBlue = false;
     pickedUpOrange = false;
@@ -294,10 +324,28 @@ var Engine = (function(global) {
     }
     while ((orangeGemXLoc == greenGemXLoc && orangeGemYLoc == greenGemYLoc) || (orangeGemXLoc == blueGemXLoc && orangeGemYLoc == blueGemYLoc));
 
+    if(lifeCount ===0 || lifeCount ===3)
+    {
     ctx.drawImage(Resources.get('images/smallHeart.png'), 30, 580);
     ctx.drawImage(Resources.get('images/smallHeart.png'), 65, 580);
     ctx.drawImage(Resources.get('images/smallHeart.png'), 100, 580);
+   }
     addedScore = true;
+  }
+
+  function fadeScore(text) {
+      var alpha = 1.0,   // full opacity
+         interval = setInterval(function () {
+              ctx.clearRect(200,580,130,100); // Clears the canvas
+              ctx.fillStyle = "rgba(50, 205, 50, " + alpha + ")";
+              ctx.font = "italic 23pt Arial";
+              ctx.fillText(text, 225, 615);
+              alpha = alpha - 0.05; // decrease opacity (fade out)
+              if (alpha < 0) {
+                  ctx.clearRect(200,580,130,100);
+                  clearInterval(interval);
+              }
+          }, 65);
   }
 
   /* Go ahead and load all of the images we know we're going to need to

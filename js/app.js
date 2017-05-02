@@ -1,5 +1,5 @@
 /* jshint undef: true, unused: true, asi: true */
-/* globals ctx, Resources, document, winScore, score */
+/* globals ctx, Resources, document*/
 
 // Enemies our player must avoid
 var Enemy = function() {
@@ -55,20 +55,8 @@ Player.prototype.resetPosition = function() {
   this.y = 403;
   livesLeft--;
   if (livesLeft === 0) {
-    if (score > highScore) {
-      highScore = score;
-      ctx.clearRect(351,630,300,50);
-      ctx.font = 'italic 15pt Arial';
-      ctx.fillStyle = 'red';
-      ctx.fillText("High Score:" +highScore, 351, 650);
-    }
-    score = 0;
-    ctx.clearRect(351,580,100,50);
-    ctx.font = 'italic 15pt Arial';
-    ctx.lineWidth = 3;
-    ctx.fillStyle = 'blue';
-    ctx.fillText("Score:" +score, 351, 620);
-    livesLeft = 3;
+
+
   }
 }
 
@@ -118,7 +106,7 @@ Player.prototype.handleInput = function(key){
         self.y = 403;
         canMove = true;
       }, 1500)
-      fadeScore("+"+winScore);
+
       /*
       ctx.fillText("You win!", 200, 615);
       setTimeout(function() {
@@ -139,20 +127,7 @@ Player.prototype.handleInput = function(key){
 }
 }
 
-function fadeScore(text) {
-    var alpha = 1.0,   // full opacity
-       interval = setInterval(function () {
-            ctx.clearRect(200,580,130,100); // Clears the canvas
-            ctx.fillStyle = "rgba(50, 205, 50, " + alpha + ")";
-            ctx.font = "italic 23pt Arial";
-            ctx.fillText(text, 225, 615);
-            alpha = alpha - 0.05; // decrease opacity (fade out)
-            if (alpha < 0) {
-                ctx.clearRect(200,580,130,100);
-                clearInterval(interval);
-            }
-        }, 65);
-}
+
 
 var player = new Player();
 var canMove = true;
@@ -160,17 +135,7 @@ var allEnemies = [];
 for (var i = 0;i < 1; i++){
   allEnemies[i] = new Enemy();
 }
-ctx.font = 'italic 35pt Cursive';
-ctx.lineWidth = 4;
-ctx.fillStyle = 'blue';
-ctx.strokeText("Crazed Beatles", 86, 37);
-ctx.fillText("Crazed Beatles", 86, 37);
-ctx.font = 'italic 15pt Arial';
-ctx.lineWidth = 3;
-ctx.fillStyle = 'blue';
-ctx.fillText("Score:" +score, 351, 620);
-ctx.fillStyle = 'red';
-ctx.fillText("High Score:" +highScore, 351, 650);
+
 var livesLeft = 3;
 
 
