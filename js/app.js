@@ -1,5 +1,5 @@
 /* jshint undef: true, unused: true, asi: true */
-/* globals ctx, Resources, document, winScore */
+/* globals ctx, Resources, document, winScore, score */
 
 // Enemies our player must avoid
 var Enemy = function() {
@@ -111,15 +111,8 @@ Player.prototype.handleInput = function(key){
       this.render();
     }
     if (this.y < 0) {
-      score = score + winScore;
       this.render();
       self = this;
-      canMove = false;
-      ctx.clearRect(351,580,100,50);
-      ctx.font = 'italic 15pt Arial';
-      ctx.lineWidth = 3;
-      ctx.fillStyle = 'blue';
-      ctx.fillText("Score:" +score, 351, 620);
       setTimeout(function() {
         self.x = 200;
         self.y = 403;
@@ -163,9 +156,6 @@ function fadeScore(text) {
 
 var player = new Player();
 var canMove = true;
-var score = 0;
-var winScore = 50;
-var highScore = 0;
 var allEnemies = [];
 for (var i = 0;i < 1; i++){
   allEnemies[i] = new Enemy();

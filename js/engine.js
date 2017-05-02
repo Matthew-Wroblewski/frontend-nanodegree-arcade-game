@@ -24,6 +24,9 @@ var Engine = (function(global) {
   canvas = doc.createElement('canvas'),
   ctx = canvas.getContext('2d'),
   initialize = true,
+  winScore = 50,
+  highScore = 0,
+  score = 0,
 
   gemXLoc,
   gemYLoc,
@@ -44,6 +47,7 @@ var Engine = (function(global) {
   pickedUpOrange,
 
   lifeCount,
+  addedScore,
   lastTime;
 
 
@@ -87,6 +91,7 @@ var Engine = (function(global) {
   * game loop.
   */
   function init() {
+    lifeCount = 3;
     reset();
     lastTime = Date.now();
     main();
@@ -121,19 +126,29 @@ var Engine = (function(global) {
   }
 
   function checkCollisions () {
+
     if (player.y == -12) {
+      if(addedScore === false) {
+      score = score + winScore;
+      canMove = false;
+      ctx.clearRect(351,580,150,50);
+      ctx.font = 'italic 15pt Arial';
+      ctx.lineWidth = 3;
+      ctx.fillStyle = 'blue';
+      ctx.fillText("Score:" +score, 351, 620);
+    }
       reset();
-    //  this.player.resetAfterWin();
+      //  this.player.resetAfterWin();
     } else if (player.y >= 60 && player.y <= 237) {
 
-      // player is on road rows, check collisions
-      // loop through each bug
+      addedScore = false;
+
       allEnemies.forEach(function(enemy) {
         // is the bug on the same row as the player?
         if (enemy.y == player.y - 10) {
           // is the bug on the player?
           if (enemy.x >= player.x - 30 && enemy.x <= player.x + 30) {
-                      if (lifeCount === 3) {
+            if (lifeCount === 3) {
               ctx.clearRect(100,580,35,75);
               --lifeCount;
             }
@@ -145,22 +160,43 @@ var Engine = (function(global) {
               ctx.clearRect(30,580,35,75);
               --lifeCount;
             }
-           this.player.resetPosition();
-           if (lifeCount === 0){
-            init();
-          }
+            this.player.resetPosition();
+            if (lifeCount === 0){
+              init();
+            }
           }
         }
       });
     }
     if (player.y >= 60 && player.y <= 237)
     {
-      if ((greenGemXLoc - player.x >= -30 && greenGemXLoc - player.x <= 30) && (greenGemYLoc - player.y >= -30 && greenGemYLoc - player.y <= 30))
+      if ((greenGemXLoc - player.x >= -30 && greenGemXLoc - player.x <= 30) && (greenGemYLoc - player.y >= -30 && greenGemYLoc - player.y <= 30) && (pickedUpGreen === false)) {
       pickedUpGreen = true;
-      else if  ((blueGemXLoc - player.x >= -30 && blueGemXLoc - player.x <= 30) && (blueGemYLoc - player.y >= -30 && blueGemYLoc - player.y <= 30))
+      score = score + winScore;
+      ctx.clearRect(351,580,100,50);
+      ctx.font = 'italic 15pt Arial';
+      ctx.lineWidth = 3;
+      ctx.fillStyle = 'blue';
+      ctx.fillText("Score:" +score, 351, 620);
+    }
+      else if  ((blueGemXLoc - player.x >= -30 && blueGemXLoc - player.x <= 30) && (blueGemYLoc - player.y >= -30 && blueGemYLoc - player.y <= 30) && (pickedUpBlue === false)) {
       pickedUpBlue = true;
-      else if ((orangeGemXLoc - player.x >= -30 && orangeGemXLoc - player.x <= 30) && (orangeGemYLoc - player.y >= -30 && orangeGemYLoc - player.y <= 30))
+      score = score + winScore;
+      ctx.clearRect(351,580,100,50);
+      ctx.font = 'italic 15pt Arial';
+      ctx.lineWidth = 3;
+      ctx.fillStyle = 'blue';
+      ctx.fillText("Score:" +score, 351, 620);
+    }
+      else if ((orangeGemXLoc - player.x >= -30 && orangeGemXLoc - player.x <= 30) && (orangeGemYLoc - player.y >= -30 && orangeGemYLoc - player.y <= 30) && (pickedUpOrange === false)) {
       pickedUpOrange = true;
+        score = score + winScore;
+        ctx.clearRect(351,580,100,50);
+        ctx.font = 'italic 15pt Arial';
+        ctx.lineWidth = 3;
+        ctx.fillStyle = 'blue';
+        ctx.fillText("Score:" +score, 351, 620);
+    }
 
     }
   }
@@ -221,13 +257,12 @@ var Engine = (function(global) {
 
     player.render();
     if (pickedUpGreen === false) {
-    ctx.drawImage(Resources.get('images/GemGreen.png'), greenGemLoc[0], greenGemLoc[1]);
-  }
-  if (pickedUpBlue === false)
-    ctx.drawImage(Resources.get('images/GemBlue.png'), blueGemLoc[0], blueGemLoc[1]);
+      ctx.drawImage(Resources.get('images/GemGreen.png'), greenGemLoc[0], greenGemLoc[1]);
+    }
+    if (pickedUpBlue === false)
+      ctx.drawImage(Resources.get('images/GemBlue.png'), blueGemLoc[0], blueGemLoc[1]);
     if (pickedUpOrange === false)
-    ctx.drawImage(Resources.get('images/GemOrange.png'), orangeGemLoc[0], orangeGemLoc[1]);
-
+      ctx.drawImage(Resources.get('images/GemOrange.png'), orangeGemLoc[0], orangeGemLoc[1]);
   }
 
   /* This function does nothing but it could have been a good place to
@@ -238,26 +273,31 @@ var Engine = (function(global) {
     pickedUpGreen = false;
     pickedUpBlue = false;
     pickedUpOrange = false;
+    addedScore = false;
     gemXLoc = [16, 117, 218, 319, 420];
     gemYLoc = [99,184,267];
     greenGemXLoc = gemXLoc[Math.floor(Math.random()*gemXLoc.length)];
     greenGemYLoc = gemYLoc[Math.floor(Math.random()*gemYLoc.length)];
     greenGemLoc = [greenGemXLoc,greenGemYLoc];
 
-  do {
-    blueGemXLoc = gemXLoc[Math.floor(Math.random()*gemXLoc.length)];
-    blueGemYLoc = gemYLoc[Math.floor(Math.random()*gemYLoc.length)];
-    blueGemLoc  = [blueGemXLoc, blueGemYLoc];
-  }
-  while (blueGemXLoc == greenGemXLoc && blueGemYLoc == greenGemYLoc);
+    do {
+      blueGemXLoc = gemXLoc[Math.floor(Math.random()*gemXLoc.length)];
+      blueGemYLoc = gemYLoc[Math.floor(Math.random()*gemYLoc.length)];
+      blueGemLoc  = [blueGemXLoc, blueGemYLoc];
+    }
+    while (blueGemXLoc == greenGemXLoc && blueGemYLoc == greenGemYLoc);
 
-  do {
-    orangeGemXLoc = gemXLoc[Math.floor(Math.random()*gemXLoc.length)];
-    orangeGemYLoc = gemYLoc[Math.floor(Math.random()*gemYLoc.length)];
-    orangeGemLoc  = [orangeGemXLoc, orangeGemYLoc];
-  }
-  while ((orangeGemXLoc == greenGemXLoc && orangeGemYLoc == greenGemYLoc) || (orangeGemXLoc == blueGemXLoc && orangeGemYLoc == blueGemYLoc));
+    do {
+      orangeGemXLoc = gemXLoc[Math.floor(Math.random()*gemXLoc.length)];
+      orangeGemYLoc = gemYLoc[Math.floor(Math.random()*gemYLoc.length)];
+      orangeGemLoc  = [orangeGemXLoc, orangeGemYLoc];
+    }
+    while ((orangeGemXLoc == greenGemXLoc && orangeGemYLoc == greenGemYLoc) || (orangeGemXLoc == blueGemXLoc && orangeGemYLoc == blueGemYLoc));
 
+    ctx.drawImage(Resources.get('images/smallHeart.png'), 30, 580);
+    ctx.drawImage(Resources.get('images/smallHeart.png'), 65, 580);
+    ctx.drawImage(Resources.get('images/smallHeart.png'), 100, 580);
+    addedScore = true;
   }
 
   /* Go ahead and load all of the images we know we're going to need to
@@ -270,7 +310,7 @@ var Engine = (function(global) {
     'images/grass-block.png',
     'images/enemy-bug.png',
     'images/char-boy.png',
-    'images/Heartsmall.png',
+    'images/smallHeart.png',
     'images/GemGreen.png',
     'images/GemBlue.png',
     'images/GemOrange.png'
@@ -282,4 +322,7 @@ var Engine = (function(global) {
   * from within their app.js files.
   */
   global.ctx = ctx;
+  global.score = score;
+  global.highScore = highScore;
+  global.winScore = winScore;
 })(this);
