@@ -96,6 +96,7 @@ var Engine = (function(global) {
       enemy.update(dt);
     });
     player.update();
+
   }
 
   function checkCollisions () {
@@ -155,6 +156,7 @@ var Engine = (function(global) {
     numCols = 5,
     row, col;
 
+
     /* Loop through the number of rows and columns we've defined above
     * and, using the rowImages array, draw the correct image for that
     * portion of the "grid"
@@ -188,6 +190,10 @@ var Engine = (function(global) {
     });
 
     player.render();
+    ctx.drawImage(Resources.get('images/GemBlue.png'), -2, 200);
+    ctx.drawImage(Resources.get('images/GemGreen.png'), 150, 300);
+    ctx.drawImage(Resources.get('images/GemOrange.png'), 300, 220);
+
   }
 
   /* This function does nothing but it could have been a good place to
@@ -212,7 +218,10 @@ var Engine = (function(global) {
     'images/grass-block.png',
     'images/enemy-bug.png',
     'images/char-boy.png',
-    'images/Heartsmall.png'
+    'images/Heartsmall.png',
+    'images/GemBlue.png',
+    'images/GemGreen.png',
+    'images/GemOrange.png'
   ]);
   Resources.onReady(init);
 
