@@ -23,8 +23,29 @@ var Engine = (function(global) {
   win = global.window,
   canvas = doc.createElement('canvas'),
   ctx = canvas.getContext('2d'),
+  initialize = true,
+
+  gemXLoc,
+  gemYLoc,
+
+  greenGemLoc,
+  greenGemXLoc,
+  greenGemYLoc,
+  pickedUpGreen,
+
+  blueGemLoc,
+  blueGemXLoc,
+  blueGemYLoc,
+  pickedUpBlue,
+
+  orangeGemLoc,
+  orangeGemXLoc,
+  orangeGemYLoc,
+  pickedUpOrange,
+
   lifeCount,
   lastTime;
+
 
   canvas.width = 505;
   canvas.height = 700; /* 606 */
@@ -40,6 +61,7 @@ var Engine = (function(global) {
     * would be the same for everyone (regardless of how fast their
     * computer is) - hurray time!
     */
+
     var now = Date.now(),
     dt = (now - lastTime) / 1000.0;
 
@@ -96,13 +118,12 @@ var Engine = (function(global) {
       enemy.update(dt);
     });
     player.update();
-
   }
 
   function checkCollisions () {
-    if (player.y == -20) {
-      // player is on water, reset
-      this.player.resetAfterWin();
+    if (player.y == -12) {
+      reset();
+    //  this.player.resetAfterWin();
     } else if (player.y >= 60 && player.y <= 237) {
 
       // player is on road rows, check collisions
@@ -132,6 +153,16 @@ var Engine = (function(global) {
         }
       });
     }
+    if (player.y >= 60 && player.y <= 237)
+    {
+      if ((greenGemXLoc - player.x >= -30 && greenGemXLoc - player.x <= 30) && (greenGemYLoc - player.y >= -30 && greenGemYLoc - player.y <= 30))
+      pickedUpGreen = true;
+      else if  ((blueGemXLoc - player.x >= -30 && blueGemXLoc - player.x <= 30) && (blueGemYLoc - player.y >= -30 && blueGemYLoc - player.y <= 30))
+      pickedUpBlue = true;
+      else if ((orangeGemXLoc - player.x >= -30 && orangeGemXLoc - player.x <= 30) && (orangeGemYLoc - player.y >= -30 && orangeGemYLoc - player.y <= 30))
+      pickedUpOrange = true;
+
+    }
   }
 
   /* This function initially draws the "game level", it will then call
@@ -155,7 +186,6 @@ var Engine = (function(global) {
     numRows = 6,
     numCols = 5,
     row, col;
-
 
     /* Loop through the number of rows and columns we've defined above
     * and, using the rowImages array, draw the correct image for that
@@ -190,9 +220,13 @@ var Engine = (function(global) {
     });
 
     player.render();
-    ctx.drawImage(Resources.get('images/GemBlue.png'), -2, 200);
-    ctx.drawImage(Resources.get('images/GemGreen.png'), 150, 300);
-    ctx.drawImage(Resources.get('images/GemOrange.png'), 300, 220);
+    if (pickedUpGreen === false) {
+    ctx.drawImage(Resources.get('images/GemGreen.png'), greenGemLoc[0], greenGemLoc[1]);
+  }
+  if (pickedUpBlue === false)
+    ctx.drawImage(Resources.get('images/GemBlue.png'), blueGemLoc[0], blueGemLoc[1]);
+    if (pickedUpOrange === false)
+    ctx.drawImage(Resources.get('images/GemOrange.png'), orangeGemLoc[0], orangeGemLoc[1]);
 
   }
 
@@ -201,10 +235,28 @@ var Engine = (function(global) {
   * those sorts of things. It's only called once by the init() method.
   */
   function reset() {
-    lifeCount = 3;
-    ctx.drawImage(Resources.get('images/Heartsmall.png'), 30, 580);
-    ctx.drawImage(Resources.get('images/Heartsmall.png'), 65, 580);
-    ctx.drawImage(Resources.get('images/Heartsmall.png'), 100, 580);
+    pickedUpGreen = false;
+    pickedUpBlue = false;
+    pickedUpOrange = false;
+    gemXLoc = [16, 117, 218, 319, 420];
+    gemYLoc = [99,184,267];
+    greenGemXLoc = gemXLoc[Math.floor(Math.random()*gemXLoc.length)];
+    greenGemYLoc = gemYLoc[Math.floor(Math.random()*gemYLoc.length)];
+    greenGemLoc = [greenGemXLoc,greenGemYLoc];
+
+  do {
+    blueGemXLoc = gemXLoc[Math.floor(Math.random()*gemXLoc.length)];
+    blueGemYLoc = gemYLoc[Math.floor(Math.random()*gemYLoc.length)];
+    blueGemLoc  = [blueGemXLoc, blueGemYLoc];
+  }
+  while (blueGemXLoc == greenGemXLoc && blueGemYLoc == greenGemYLoc);
+
+  do {
+    orangeGemXLoc = gemXLoc[Math.floor(Math.random()*gemXLoc.length)];
+    orangeGemYLoc = gemYLoc[Math.floor(Math.random()*gemYLoc.length)];
+    orangeGemLoc  = [orangeGemXLoc, orangeGemYLoc];
+  }
+  while ((orangeGemXLoc == greenGemXLoc && orangeGemYLoc == greenGemYLoc) || (orangeGemXLoc == blueGemXLoc && orangeGemYLoc == blueGemYLoc));
 
   }
 
@@ -219,8 +271,8 @@ var Engine = (function(global) {
     'images/enemy-bug.png',
     'images/char-boy.png',
     'images/Heartsmall.png',
-    'images/GemBlue.png',
     'images/GemGreen.png',
+    'images/GemBlue.png',
     'images/GemOrange.png'
   ]);
   Resources.onReady(init);
