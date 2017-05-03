@@ -23,6 +23,7 @@ var Engine = (function(global) {
   win = global.window,
   canvas = doc.createElement('canvas'),
   ctx = canvas.getContext('2d'),
+  gemPickupSound = new Audio('sounds/gempickup.wav'),
   initialize = true,
   winScore = 50,
   highScore = 0,
@@ -48,8 +49,8 @@ var Engine = (function(global) {
 
   lifeCount,
   addedScore,
+  level,
   lastTime;
-
 
   canvas.width = 505;
   canvas.height = 700; /* 606 */
@@ -92,18 +93,27 @@ var Engine = (function(global) {
   */
   function init() {
     lifeCount = 3;
+    level = 1;
+    allEnemies.splice(0,allEnemies.length-1 );
+
     ctx.font = 'italic 35pt Cursive';
     ctx.lineWidth = 4;
     ctx.fillStyle = 'blue';
     ctx.strokeText("Crazed Beatles", 86, 37);
     ctx.fillText("Crazed Beatles", 86, 37);
 
+    ctx.clearRect(30,640,175,575);
+    ctx.font = 'italic 15pt Arial';
+    ctx.lineWidth = 3;
+    ctx.fillStyle = 'blue';
+    ctx.fillText("Level: "+level, 30, 660);
+
     if (score > highScore) {
       highScore = score;
       ctx.clearRect(351,630,300,50);
       ctx.font = 'italic 15pt Arial';
       ctx.fillStyle = 'red';
-      ctx.fillText("High Score:" +highScore, 351, 650);
+      ctx.fillText("High Score:" +highScore, 351, 655);
     }
 
     score = 0;
@@ -115,7 +125,7 @@ var Engine = (function(global) {
     livesLeft = 3;
 
     ctx.fillStyle = 'red';
-    ctx.fillText("High Score:" +highScore, 351, 650);
+    ctx.fillText("High Score:" +highScore, 351, 655);
 
     reset();
     lastTime = Date.now();
@@ -162,9 +172,16 @@ var Engine = (function(global) {
       ctx.fillStyle = 'blue';
       ctx.fillText("Score:" +score, 351, 620);
       fadeScore("+"+winScore);
+
+      ctx.clearRect(30,640,175,575);
+      level++;
+      ctx.font = 'italic 15pt Arial';
+      ctx.lineWidth = 3;
+      ctx.fillStyle = 'blue';
+      ctx.fillText("Level: "+level, 30, 660);
     }
       reset();
-      //  this.player.resetAfterWin();
+
     } else if (player.y >= 60 && player.y <= 237) {
 
       addedScore = false;
@@ -179,7 +196,7 @@ var Engine = (function(global) {
               --lifeCount;
             }
             else if (lifeCount === 2) {
-              ctx.clearRect(66,580,35,75);
+              ctx.clearRect(66,580,35,50);
               --lifeCount;
             }
             else {
@@ -198,6 +215,7 @@ var Engine = (function(global) {
     {
       if ((greenGemXLoc - player.x >= -30 && greenGemXLoc - player.x <= 30) && (greenGemYLoc - player.y >= -30 && greenGemYLoc - player.y <= 30) && (pickedUpGreen === false)) {
       pickedUpGreen = true;
+      gemPickupSound.play();
       score = score + winScore;
       ctx.clearRect(351,580,150,50);
       ctx.font = 'italic 15pt Arial';
@@ -208,6 +226,7 @@ var Engine = (function(global) {
     }
       else if  ((blueGemXLoc - player.x >= -30 && blueGemXLoc - player.x <= 30) && (blueGemYLoc - player.y >= -30 && blueGemYLoc - player.y <= 30) && (pickedUpBlue === false)) {
       pickedUpBlue = true;
+      gemPickupSound.play();
       score = score + winScore;
       ctx.clearRect(351,580,100,50);
       ctx.font = 'italic 15pt Arial';
@@ -218,6 +237,7 @@ var Engine = (function(global) {
     }
       else if ((orangeGemXLoc - player.x >= -30 && orangeGemXLoc - player.x <= 30) && (orangeGemYLoc - player.y >= -30 && orangeGemYLoc - player.y <= 30) && (pickedUpOrange === false)) {
       pickedUpOrange = true;
+        gemPickupSound.play();
         score = score + winScore;
         ctx.clearRect(351,580,100,50);
         ctx.font = 'italic 15pt Arial';
@@ -306,6 +326,7 @@ var Engine = (function(global) {
     addedScore = false;
     gemXLoc = [16, 117, 218, 319, 420];
     gemYLoc = [99,184,267];
+
     greenGemXLoc = gemXLoc[Math.floor(Math.random()*gemXLoc.length)];
     greenGemYLoc = gemYLoc[Math.floor(Math.random()*gemYLoc.length)];
     greenGemLoc = [greenGemXLoc,greenGemYLoc];
@@ -330,6 +351,7 @@ var Engine = (function(global) {
     ctx.drawImage(Resources.get('images/smallHeart.png'), 65, 580);
     ctx.drawImage(Resources.get('images/smallHeart.png'), 100, 580);
    }
+
     addedScore = true;
   }
 

@@ -9,12 +9,13 @@ var Enemy = function() {
   // The image/sprite for our enemies, this uses
   // a helper we've provided to easily load images
   // 227, 144,62 center y
+  this.speedAdjustment = 50;
   this.ypositions = [61,144,227];
   this.xpositions = [-200,-150,-100,-50,0,50,100,150,200,250,300];
   this.sprite = 'images/enemy-bug.png';
   this.x = this.xpositions[Math.floor(Math.random()*this.xpositions.length)];
   this.y = this.ypositions[Math.floor(Math.random()*this.ypositions.length)];
-  this.speed = Math.random() * 200 + 85;
+  this.speed = Math.random() * 200 + this.speedAdjustment;
 }
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
@@ -25,12 +26,19 @@ Enemy.prototype.update = function(dt) {
 
   this.x = this.x + this.speed*dt;
   if (this.x > 5 * 101){
+
+  if (allEnemies.length === 1) {
+    this.speedAdjustment = 50;
+  }
     this.x = -100;
+    if (this.speedAdjustment < 215) {
+    this.speedAdjustment = this.speedAdjustment + 5;
+  }
     // Returns a random integer between min (included) and max (included)
     // Using Math.round() will give you a non-uniform distribution!
     this.y = this.ypositions[Math.floor(Math.random()*this.ypositions.length)];
     // speed range from 25-75
-    this.speed = Math.random() * 300 + 85;
+    this.speed = Math.random() * 215 + this.speedAdjustment;
 
   }
   if (this.x > 0)
@@ -99,6 +107,9 @@ Player.prototype.handleInput = function(key){
       this.render();
     }
     if (this.y < 0) {
+      if (allEnemies.length < 6) {
+        allEnemies[allEnemies.length] = new Enemy();
+      }
       this.render();
       self = this;
       setTimeout(function() {
@@ -106,12 +117,6 @@ Player.prototype.handleInput = function(key){
         self.y = 403;
         canMove = true;
       }, 1500)
-
-      /*
-      ctx.fillText("You win!", 200, 615);
-      setTimeout(function() {
-        ctx.clearRect(200,585,200,100);
-      }, 2000) */
 
     }
     break;
