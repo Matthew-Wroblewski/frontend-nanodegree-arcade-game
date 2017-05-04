@@ -110,6 +110,7 @@ var Engine = (function(global) {
       enemy.update(dt);
     });
     player.update();
+
   }
 
   function checkCollisions () {
@@ -236,13 +237,18 @@ var Engine = (function(global) {
     });
 
     player.render();
-    if (pickedUpGreen === false) {
+
+    allGems.forEach(function(gem) {
+      gem.render();
+    });
+
+  /*  if (pickedUpGreen === false) {
       ctx.drawImage(Resources.get('images/GemGreen.png'), greenGemLoc[0], greenGemLoc[1]);
     }
     if (pickedUpBlue === false)
       ctx.drawImage(Resources.get('images/GemBlue.png'), blueGemLoc[0], blueGemLoc[1]);
     if (pickedUpOrange === false)
-      ctx.drawImage(Resources.get('images/GemOrange.png'), orangeGemLoc[0], orangeGemLoc[1]);
+      ctx.drawImage(Resources.get('images/GemOrange.png'), orangeGemLoc[0], orangeGemLoc[1]); */
   }
 
   function reset() {

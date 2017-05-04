@@ -99,11 +99,29 @@ Player.prototype.handleInput = function(key){
   }
 }
 
+var Gem = function(url) {
+  this.gem = url;
+  this.x = 300;
+  this.y = 300;
+  this.pickedUp = false;
+}
+
+Gem.prototype.render = function() {
+  ctx.drawImage(Resources.get(this.gem), this.x, this.y);
+
+}
+
+
 var player = new Player();
 var canMove = true;
 var allEnemies = [];
+var allGems  = [];
 for (var i = 0;i < 1; i++){
   allEnemies[i] = new Enemy();
+}
+var gemUrls = ['images/GemBlue.png','images/GemGreen.png','images/GemOrange.png']
+for (var i = 0; i < gemUrls.length; i++) {
+  allGems[i] = new Gem(gemUrls[i]);
 }
 
 document.addEventListener('keyup', function(e) {
