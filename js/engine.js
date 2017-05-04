@@ -16,24 +16,6 @@ var Engine = (function(global) {
   highScore = 0,
   score = 0,
 
-  gemXLoc,
-  gemYLoc,
-
-  greenGemLoc,
-  greenGemXLoc,
-  greenGemYLoc,
-  pickedUpGreen,
-
-  blueGemLoc,
-  blueGemXLoc,
-  blueGemYLoc,
-  pickedUpBlue,
-
-  orangeGemLoc,
-  orangeGemXLoc,
-  orangeGemYLoc,
-  pickedUpOrange,
-
   lifeCount,
   addedScore,
   level,
@@ -166,40 +148,19 @@ var Engine = (function(global) {
     }
     if (player.y >= 60 && player.y <= 237)
     {
-      if ((greenGemXLoc - player.x >= -30 && greenGemXLoc - player.x <= 30) && (greenGemYLoc - player.y >= -30 && greenGemYLoc - player.y <= 30) && (pickedUpGreen === false)) {
-        pickedUpGreen = true;
-        gemPickupSound.play();
-        score = score + winScore;
-        ctx.clearRect(351,580,150,50);
-        ctx.font = 'italic 15pt Arial';
-        ctx.lineWidth = 3;
-        ctx.fillStyle = 'blue';
-        ctx.fillText("Score:" +score, 351, 620);
-        fadeScore("+"+winScore);
+      allGems.forEach(function(gem) {
+        if ((gem.x - player.x >= -30 && gem.x - player.x <= 30) && (gem.y - player.y >= -30 && gem.y - player.y <= 30) && (gem.pickedUp === false)) {
+          gem.pickedUp = true;
+          gemPickupSound.play();
+          score = score + winScore;
+          ctx.clearRect(351,580,150,50);
+          ctx.font = 'italic 15pt Arial';
+          ctx.lineWidth = 3;
+          ctx.fillStyle = 'blue';
+          ctx.fillText("Score:" +score, 351, 620);
+          fadeScore("+"+winScore);
       }
-      else if  ((blueGemXLoc - player.x >= -30 && blueGemXLoc - player.x <= 30) && (blueGemYLoc - player.y >= -30 && blueGemYLoc - player.y <= 30) && (pickedUpBlue === false)) {
-        pickedUpBlue = true;
-        gemPickupSound.play();
-        score = score + winScore;
-        ctx.clearRect(351,580,100,50);
-        ctx.font = 'italic 15pt Arial';
-        ctx.lineWidth = 3;
-        ctx.fillStyle = 'blue';
-        ctx.fillText("Score:" +score, 351, 620);
-        fadeScore("+"+winScore);
-      }
-      else if ((orangeGemXLoc - player.x >= -30 && orangeGemXLoc - player.x <= 30) && (orangeGemYLoc - player.y >= -30 && orangeGemYLoc - player.y <= 30) && (pickedUpOrange === false)) {
-        pickedUpOrange = true;
-        gemPickupSound.play();
-        score = score + winScore;
-        ctx.clearRect(351,580,100,50);
-        ctx.font = 'italic 15pt Arial';
-        ctx.lineWidth = 3;
-        ctx.fillStyle = 'blue';
-        ctx.fillText("Score:" +score, 351, 620);
-        fadeScore("+"+winScore);
-      }
-
+    });
     }
   }
 
@@ -239,44 +200,20 @@ var Engine = (function(global) {
     player.render();
 
     allGems.forEach(function(gem) {
-      gem.render();
+      if (gem.pickedUp === false) {
+        gem.render();
+      }
     });
-
-  /*  if (pickedUpGreen === false) {
-      ctx.drawImage(Resources.get('images/GemGreen.png'), greenGemLoc[0], greenGemLoc[1]);
-    }
-    if (pickedUpBlue === false)
-      ctx.drawImage(Resources.get('images/GemBlue.png'), blueGemLoc[0], blueGemLoc[1]);
-    if (pickedUpOrange === false)
-      ctx.drawImage(Resources.get('images/GemOrange.png'), orangeGemLoc[0], orangeGemLoc[1]); */
   }
 
   function reset() {
 
-    pickedUpGreen = false;
-    pickedUpBlue = false;
-    pickedUpOrange = false;
     addedScore = false;
-    gemXLoc = [16, 117, 218, 319, 420];
-    gemYLoc = [99,184,267];
 
-    greenGemXLoc = gemXLoc[Math.floor(Math.random()*gemXLoc.length)];
-    greenGemYLoc = gemYLoc[Math.floor(Math.random()*gemYLoc.length)];
-    greenGemLoc = [greenGemXLoc,greenGemYLoc];
-
-    do {
-      blueGemXLoc = gemXLoc[Math.floor(Math.random()*gemXLoc.length)];
-      blueGemYLoc = gemYLoc[Math.floor(Math.random()*gemYLoc.length)];
-      blueGemLoc  = [blueGemXLoc, blueGemYLoc];
-    }
-    while (blueGemXLoc == greenGemXLoc && blueGemYLoc == greenGemYLoc);
-
-    do {
-      orangeGemXLoc = gemXLoc[Math.floor(Math.random()*gemXLoc.length)];
-      orangeGemYLoc = gemYLoc[Math.floor(Math.random()*gemYLoc.length)];
-      orangeGemLoc  = [orangeGemXLoc, orangeGemYLoc];
-    }
-    while ((orangeGemXLoc == greenGemXLoc && orangeGemYLoc == greenGemYLoc) || (orangeGemXLoc == blueGemXLoc && orangeGemYLoc == blueGemYLoc));
+    allGems.forEach(function(gem) {
+      gem.pickedUp = false;
+      gem.getLoc(gem.indexOf);
+    });
 
     if(lifeCount ===0 || lifeCount ===3)
     {

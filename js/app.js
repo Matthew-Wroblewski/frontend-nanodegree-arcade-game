@@ -99,10 +99,9 @@ Player.prototype.handleInput = function(key){
   }
 }
 
-var Gem = function(url) {
+var Gem = function(url, i) {
+  this.indexOf = i;
   this.gem = url;
-  this.x = 300;
-  this.y = 300;
   this.pickedUp = false;
 }
 
@@ -111,17 +110,43 @@ Gem.prototype.render = function() {
 
 }
 
+Gem.prototype.getLoc = function(indexOf){
 
-var player = new Player();
+  if (allGems[indexOf].indexOf === 0) {
+    this.x = gemXLoc[Math.floor(Math.random()*gemXLoc.length)];
+    this.y = gemYLoc[Math.floor(Math.random()*gemYLoc.length)];
+  }
+
+  if (allGems[indexOf].indexOf === 1) {
+    do {
+      this.x = gemXLoc[Math.floor(Math.random()*gemXLoc.length)];
+      this.y = gemYLoc[Math.floor(Math.random()*gemYLoc.length)];
+    }
+    while (this.x == allGems[0].x && this.y == allGems[0].y);
+  }
+
+  if (allGems[indexOf].indexOf === 2) {
+    do {
+      this.x = gemXLoc[Math.floor(Math.random()*gemXLoc.length)];
+      this.y = gemYLoc[Math.floor(Math.random()*gemYLoc.length)];
+    }
+    while ((this.x == allGems[0].x && this.y == allGems[0].y) || (this.x == allGems[1].x && this.y == allGems[1].y));
+  }
+}
+
+var gemUrls = ['images/GemBlue.png','images/GemGreen.png','images/GemOrange.png']
+var gemXLoc = [16, 117, 218, 319, 420];
+var gemYLoc = [99,184,267];
 var canMove = true;
 var allEnemies = [];
 var allGems  = [];
 for (var i = 0;i < 1; i++){
   allEnemies[i] = new Enemy();
 }
-var gemUrls = ['images/GemBlue.png','images/GemGreen.png','images/GemOrange.png']
+var player = new Player();
 for (var i = 0; i < gemUrls.length; i++) {
-  allGems[i] = new Gem(gemUrls[i]);
+  allGems[i] = new Gem(gemUrls[i], i);
+  allGems[i].getLoc(i);
 }
 
 document.addEventListener('keyup', function(e) {
