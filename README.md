@@ -4,6 +4,9 @@ Crazed Beatles
 ## Summary
 Crazed Beatles is a variation of Frogger, a classic arcade game.
 
+![alt text](C:\Users\mattw\frontend-nanodegree-arcade-game\images\crazedbeatles.png)
+
+
 ### Installation
 To run the application:
 
